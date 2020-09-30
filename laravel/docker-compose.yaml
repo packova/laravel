@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+
+  app:
+    container_name: app
+    image: docker.io/kpackova/laravel
+    networks:
+      - app
+    ports: 
+      - 80:80  
+    working_dir: /var/www/app
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7.28
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: app
+      MYSQL_PASSWORD: secret
+    ports:
+    - 3306:3306
+    networks:
+    - app
+    volumes:
+    - sqldata:/var/lib/mysql
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks: 
+      - app
+    volumes:
+      - redisdata:/data
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  sqldata:
+    driver: local
+  redisdata:
+    driver: local  
